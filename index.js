@@ -1,5 +1,3 @@
-const { hostname, server, port } = require("./web_server/app");
+const nextState  = require("./immer/app");
 
-server.listen(port, hostname, () => {
-  console.log(`Server running on http://${hostname}:${port}`);
-});
+console.log(nextState);
