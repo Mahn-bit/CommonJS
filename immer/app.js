@@ -49,5 +49,11 @@ const nextState = produce(originalState, (draft) => {
   draft.todos[2].completed = true;
 });
 
+const user = ["ibrahim"];
 
-module.exports = nextState
+const updateUser = produce(user, (draft) => {
+  draft[0] = "Ibrahim Molade";
+  draft.push("Oluwatosin Akande");
+});
+
+module.exports = { nextState, updateUser };
