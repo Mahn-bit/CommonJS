@@ -10,13 +10,13 @@ const server = createServer((req, res) => {
   let path = req.url;
 
   if (path === "/" || path.toLocaleLowerCase() === "/home") {
-    res.end(`You're in the home page!`);
+    res.end(html.replace("{{%CONTENT%}}", `You're in about page`));
   } else if (path.toLocaleLowerCase() === "/about") {
-    res.end(`You're in the about page!`);
+    res.end(html.replace("{{%CONTENT%}}", `You're in about page`));
   } else if (path.toLocaleLowerCase() === "/contact") {
-    res.end(`You're in the contact page`);
+    res.end(html.replace("{{%CONTENT%}}", `You're in the contact page`));
   } else {
-    res.end(`Error 404: Page not found`);
+    res.end(html.replace("{{%CONTENT%}}", `Error 404: Page not found`));
   }
   console.log("Request recieved");
 });
