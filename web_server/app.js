@@ -10,12 +10,28 @@ const server = createServer((req, res) => {
   let path = req.url;
 
   if (path === "/" || path.toLocaleLowerCase() === "/home") {
+    res.writeHead(200, {
+      "Content-Type": "text/html",
+      "my-header": "Hello World",
+    });
     res.end(html.replace("{{%CONTENT%}}", `You're in about page`));
   } else if (path.toLocaleLowerCase() === "/about") {
+    res.writeHead(200, {
+      "Content-Type": "text/html",
+      "my-header": "Hello World",
+    });
     res.end(html.replace("{{%CONTENT%}}", `You're in about page`));
   } else if (path.toLocaleLowerCase() === "/contact") {
+    res.writeHead(200, {
+      "Content-Type": "text/html",
+      "my-header": "Hello World",
+    });
     res.end(html.replace("{{%CONTENT%}}", `You're in the contact page`));
   } else {
+    res.writeHead(404, {
+      "Content-Type": "text/html",
+      "my-header": "Hello World",
+    });
     res.end(html.replace("{{%CONTENT%}}", `Error 404: Page not found`));
   }
   console.log("Request recieved");
