@@ -1,28 +1,33 @@
 const { createServer } = require("http");
 const { readFileSync, readFile } = require("fs");
+const url = require("url");
 
 const html = readFileSync("Template/index.html", "utf-8");
 let products = JSON.parse(readFileSync("Data/products.json", "utf-8"));
 let productListHtml = readFileSync("Template/product-list.html", "utf-8");
+let productDetails = readFileSync("Template/product-details.html", "utf-8");
 
-const productHtmlArray = products.map((product) => {
-  let output = productListHtml;
-  output = output.replace("{{%IMAGE%}}", product.productImage);
-  output = output.replace("{{%NAME%}}", product.name);
-  output = output.replace("{{%MODELNAME%}}", product.modeName);
-  output = output.replace("{{%MODELNO%}}", product.modelNumber);
-  output = output.replace("{{%SIZE%}}", product.size);
-  output = output.replace("{{%CAMERA%}}", product.camera);
-  output = output.replace("{{%PRICE%}}", product.price);
-  output = output.replace("{{%COLOR%}}", product.color);
+const replaceHtml = (template, products) => {
+  let output = template;
+  output = output.replace("{{%IMAGE%}}", products.productImage);
+  output = output.replace("{{%NAME%}}", products.name);
+  output = output.replace("{{%MODELNAME%}}", products.modeName);
+  output = output.replace("{{%MODELNO%}}", products.modelNumber);
+  output = output.replace("{{%SIZE%}}", products.size);
+  output = output.replace("{{%CAMERA%}}", products.camera);
+  output = output.replace("{{%PRICE%}}", products.price);
+  output = output.replace("{{%COLOR%}}", products.color);
+  output = output.replace("{{%ID%}}", products.id);
+  output = output.replace("{{%ROM%}}", products.ROM);
+  output = output.replace("{{%DESC%}}", products.Description);
   return output;
-});
+};
 
 const hostname = "127.0.0.1";
 const port = 3000;
 
 const server = createServer((req, res) => {
-  let path = req.url.toLocaleLowerCase();
+  let { query, pathname: path } = url.parse(req.url, true);
 
   if (path === "/" || path.toLocaleLowerCase() === "/home") {
     res.writeHead(200, {
@@ -43,11 +48,19 @@ const server = createServer((req, res) => {
     });
     res.end(html.replace("{{%CONTENT%}}", `You're in contact page`));
   } else if (path.toLocaleLowerCase() === "/products") {
-    res.writeHead(200, {
-      "Content-Type": "text/html",
-    });
-    res.end(html.replace("{{%CONTENT%}}", productHtmlArray.join(",")));
-    console.log(productHtmlArray.join(","));
+    if (!query.id) {
+      res.writeHead(200, {
+        "Content-Type": "text/html",
+      });
+      let productHtmlArray = products.map((product) => {
+        return replaceHtml(productListHtml, product);
+      });
+      res.end(html.replace("{{%CONTENT%}}", productHtmlArray.join(",")));
+    } else {
+      let details = products[query.id];
+      let productDetailsResponse = replaceHtml(productDetails, details);
+      res.end(html.replace("{{%CONTENT%}}", productDetailsResponse));
+    }
   } else {
     res.writeHead(404, {
       "Content-Type": "text/html",
@@ -58,5 +71,5 @@ const server = createServer((req, res) => {
 });
 
 server.listen(port, hostname, () => {
-  console.log(`Server is running on http://${hostname}:${port}`);
+  console.log(`Server is now running on http://${hostname}:${port}`);
 });
